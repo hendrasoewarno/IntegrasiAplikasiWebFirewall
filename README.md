@@ -81,3 +81,11 @@ dan untuk menjalankan aplikasi diatas dibackground:
 ```
 python apfw.py > /dev/null &
 ```
+Untuk menampilkan process id aplikasi dibackground:
+```
+ps ax | grep apfw
+```
+untuk menghentikan aplikasi dibackground:
+```
+pkill -F apfw.py
+```
