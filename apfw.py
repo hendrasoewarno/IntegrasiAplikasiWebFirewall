@@ -38,12 +38,13 @@ class Detector:
 		return retVal
 									
 jail = []
+ignoreIP = ["127.0.0.1","::1"]
 
 #ip = IP Address yang akan diblacklist
 #reason = Keterangan alasan diblacklist
 def blacklist(ip, reason):
 	now = datetime.now()
-	if ip not in jail:
+	if ip not in jail and ip not in ignoreIP:
 		fwcmd = '/sbin/iptables -A INPUT -s ' + ip + '1 -j DROP'
 		subprocess.call(fwcmd, shell=True)
 		jail.append(ip)
