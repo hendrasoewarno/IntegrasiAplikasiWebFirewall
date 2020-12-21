@@ -1,6 +1,16 @@
 # ApachePHPFirewall
 Integrasi Apache2, PHP dengan sistem IPTables, sehingga dapat mendeteksi dan memblokir upaya serangan Brute Force
+
+Pada PHP, kita dapat mengatur HTTP Response Code yang nantinya akan dicatat pada /var/log/apache2/access.log (HTTP) atau /var/log/apache2/ssl_access.log (HTTPS), sehingga bisa dideteksi dengan Python Script.
 ```
+if ($gagalLogin) {
+	http_response_code (203)
+	//perintah PHP lainnya
+}
+```
+Berikut ini adalah Python Script yang membaca dan mendeteksi isi file /var/log/apache2/ssl_access secara realtime, dan menambahkan iptables rule pada chain INPUT untuk memblokir IP Address yang diprediksi melakukan upaya eksploitasi terhadap aplikasi WEB.
+```
+#!/usr/bin/python
 import time
 import subprocess
 import select
@@ -92,5 +102,4 @@ kill -9 <pid>
 atau
 ```
 pkill -f apfw.py
-```
 ```
