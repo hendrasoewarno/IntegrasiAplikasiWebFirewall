@@ -87,5 +87,10 @@ ps ax | grep apfw
 ```
 untuk menghentikan aplikasi dibackground:
 ```
-pkill -F apfw.py
+kill -9 <pid>
+```
+atau
+```
+pkill -f apfw.py
+```
 ```
