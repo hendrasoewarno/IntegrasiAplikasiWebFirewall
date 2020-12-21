@@ -76,3 +76,8 @@ while True:
 
 	time.sleep(0.001)
 ```
+
+dan untuk menjalankan aplikasi diatas dibackground:
+```
+python apfw.py > /dev/null &
+```
