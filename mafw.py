@@ -35,8 +35,8 @@ while True:
 	if p.poll(1):
 		line = f.stdout.readline()		
         if "authentication failed: authentication failure" in line:
-            suspect = line.split()		
-            ipaddress = (suspect[6].split('[', 1)[-1]).split(']',1)[0]
+            parts = line.split()		
+            ipaddress = (parts[6].split('[', 1)[-1]).split(']',1)[0]
             if ipaddress not in suspect.keys():
                 suspect[ipaddress]=1
             else:
@@ -46,16 +46,16 @@ while True:
             
                 
         elif "pop3-login: Aborted login (auth failed, 1 attempts):" in line:
-            suspect = line.split()
-            ipaddress = (suspect[14].split('rip=', 1)[-1]).split(',',1)[0]
+            parts = line.split()
+            ipaddress = (parts[14].split('rip=', 1)[-1]).split(',',1)[0]
             if ipaddress not in suspect.keys():
                 suspect[ipaddress]=1
             else:
                 suspect[ipaddress]+=1
 
                 elif "NOQUEUE: reject: RCPT from unknown" in line:
-                    suspect = line.split()
-                    ipaddress = (suspect[9].split('unknown[', 1)[-1]).split(']',1)[0]
+                    parts = line.split()
+                    ipaddress = (parts[9].split('unknown[', 1)[-1]).split(']',1)[0]
                     if ipaddress not in suspect.keys():
                         suspect[ipaddress]=1
                     else:
