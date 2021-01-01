@@ -1,7 +1,5 @@
 #!/usr/bin/python
 import time
-import subprocess
-import select
 import json
 
 from datetime import datetime
