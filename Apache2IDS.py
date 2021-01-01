@@ -43,7 +43,7 @@ jail = []
 def blacklist(ip, reason):
         now = datetime.now()
         if ip not in jail:
-                fwcmd = '/sbin/iptables -A INPUT -s ' + ip + '1 -j DROP'
+                fwcmd = '/sbin/iptables -A INPUT -s ' + ip + ' -j DROP'
                 subprocess.call(fwcmd, shell=True)
                 jail.append(ip)
                 with open('/var/log/jail/' + now.strftime("%Y%m%d") + ".log",'a+') as flog:
