@@ -1,7 +1,5 @@
 #!/usr/bin/python
 import time
-import subprocess
-import select
 import json
 
 from datetime import datetime
@@ -39,8 +37,8 @@ loglines = getLine(f)
 for line in loglines:
         print line
         if "authentication failed: authentication failure" in line:
-            suspect = line.split()		
-            ipaddress = (suspect[6].split('[', 1)[-1]).split(']',1)[0]
+            parts = line.split()		
+            ipaddress = (parts[6].split('[', 1)[-1]).split(']',1)[0]
             if ipaddress not in suspect.keys():
                 suspect[ipaddress]=1
             else:
@@ -50,8 +48,8 @@ for line in loglines:
             
                 
         elif "pop3-login: Aborted login (auth failed, 1 attempts):" in line:
-            suspect = line.split()
-            ipaddress = (suspect[14].split('rip=', 1)[-1]).split(',',1)[0]
+            parts = line.split()
+            ipaddress = (parts[14].split('rip=', 1)[-1]).split(',',1)[0]
             if ipaddress not in suspect.keys():
                 suspect[ipaddress]=1
             else:
