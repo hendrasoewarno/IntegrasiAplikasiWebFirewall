@@ -204,3 +204,51 @@ atau
 ```
 pkill -f apfw.py
 ```
+# Pengembangan kedepan
+Anda dapat mengembangkan script tersebut diatas untuk pengecualiaan alamat ip tertentu, misalnya proxy server perusahaan yang kemungkinan kesalahan user bersifat akumulatif pada alamat proxy server.
+```
+jail = []
+ignoreIP = ["127.0.0.1", ":::1"]
+
+#ip = IP Address yang akan diblacklist
+#reason = Keterangan alasan diblacklist
+def blacklist(ip, reason):
+	now = datetime.now()
+	if ip not in jail and ip not in iqnoreIP:
+		fwcmd = '/sbin/iptables -A INPUT -s ' + ip + ' -j DROP'
+		subprocess.call(fwcmd, shell=True)
+		jail.append(ip)
+		with open('/var/log/jail/' + now.strftime("%Y%m%d") + ".log",'a+') as flog:
+			flog.write(ip + " -> " + reason + "@" + now.strftime("%H:%M:%S"))
+			flog.write("\n")
+```
+Kemudian script tersebut diatas juga memiliki potensi diintegrasikan dengan Apahce mod_security yang bersifat Web Application Firewall yang pada umumnya membatasi user dengan kode 403 Forbidden sehingga mengurangi overhead pada Server untuk terus menerus memblokir dan melakukan log terhadap serangan SQLInjection ataupun XSS dari alamat ip tertentu yang mengarah ke DDoS.
+```
+#define kind of detector
+detector401 = Detector("\" 401 ", "401 Unauthorized > 20times", 20)
+detector403 = Detector("\" 403 ", "401 Forbidden > 20times", 20)
+detector404 = Detector("\" 404 ", "404 Not Found > 200times", 200)
+
+#202 dicustom untuk aplikasi yang submit form bebas untuk ditindak
+#lanjuti seperti Keluhan konsumen dan Lamaran Kerja
+detector202 = Detector("\" 202 ", "202 Accepted > 4times", 4)
+
+#203 dicustom untuk aplikasi jika gagal login
+detector203 = Detector("\" 203 ", "203 Non-Authoritative Information > 30times", 30)
+
+f = open('/var/log/apache2/access.log', 'r')
+
+loglines = getLine(f)
+for line in loglines:
+        print line
+        if detector401.detect(line) > 0:
+                print "detected 401"
+        if detector403.detect(line) > 0:
+                print "detected 403"		
+        elif detector404.detect(line) > 0:	
+                print "detected 404"
+        elif detector202.detect(line) > 0:
+                print "detected 202"
+        elif detector203.detect(line) > 0:
+                print "detected 203"
+```
