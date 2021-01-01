@@ -1,0 +1,61 @@
+#!/usr/bin/python
+import time
+import subprocess
+import re
+import json
+
+from datetime import datetime
+
+jail = []
+ignoreIP = ["127.0.0.1","::1"]
+
+#ip = IP Address yang akan diblacklist
+#reason = Keterangan alasan diblacklist
+def blacklist(ip, reason):
+        now = datetime.now()
+        if ip not in jail and ip not in ignoreIP:
+                fwcmd = '/sbin/iptables -A INPUT -s ' + ip + ' -j DROP'
+                subprocess.call(fwcmd, shell=True)
+                jail.append(ip)
+                with open('/var/log/jail/' + now.strftime("%Y%m%d") + ".log",'a+') as flog:
+                        flog.write(ip + " -> " + reason + "@" + now.strftime("%H:%M:%S"))
+                        flog.write("\n")
+
+def getLine(file):
+        file.seek(0,2)
+        while True:
+                line = file.readline()
+                if not line:
+                        time.sleep(0.001)
+                        continue
+                yield line
+
+suspect = {}
+failedlimit = 4
+
+f = open('/var/log/auth.log', 'r')
+
+loglines = getLine(f)
+lastfailed = False
+ipaddress = ''
+for line in loglines:
+        print line
+        if "Failed password for" in line:
+            ipaddress = re.search('from (.*) port', line).group(1)
+            if ipaddress not in suspect.keys():
+                suspect[ipaddress]=1
+            else:
+                suspect[ipaddress]+=1
+            if suspect[ipaddress] > failedlimit:
+                blacklist(ipaddress, "SSH Authentication Failed")
+            lastfailed = True
+        elif "last message repeated" in line and lastfailed:
+            times = re.search('repeated (.*) times', line).group(1)
+            suspect[ipaddress]+=int(times)
+            if suspect[ipaddress] > failedlimit:
+                blacklist(ipaddress, "SSH Authentication Failed")
+        else:
+            lastfailed = False
+
+        time.sleep(0.001)
+
