@@ -42,7 +42,7 @@ while True:
             else:
                 suspect[ipaddress]+=1
             if suspect[ipaddress] > failedlimit:
-                blacklist(ip, "SASL Authentication Failed")
+                blacklist(ipaddress, "SASL Authentication Failed")
             
                 
         elif "pop3-login: Aborted login (auth failed, 1 attempts):" in line:
@@ -62,6 +62,6 @@ while True:
                         suspect[ipaddress]+=1
             
             if suspect[ipaddress] > failedlimit:
-                blacklist(ip, "POP3 Login Failed")
+                blacklist(ipaddress, "POP3 Login Failed")
 
 	time.sleep(0.001)
