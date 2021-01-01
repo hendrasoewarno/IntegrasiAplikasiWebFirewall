@@ -1,5 +1,5 @@
 # Apache & PHP Firewall Integration
-Tulisan ini menunjukan ide bagaimana cara melakukan integrasi antara Apache2, PHP dengan sistem IPTables, sehingga memungkinkan upaya pendeteksian dan pemblokiran secara realtime terhadap serangan Brute Force.<br>
+Tulisan ini menunjukan ide bagaimana cara melakukan integrasi antara Apache2, PHP dengan sistem IPTables menjadi Intrussion Prevention System, sehingga memungkinkan upaya pendeteksian dan pemblokiran secara realtime terhadap serangan Brute Force.<br>
 <br>
 Pada umumnya pada aplikasi WEB dapat melakukan upaya intruder logout dengan menggunakan sesi maupun pencatatan pada log database, tetapi pada tulisan ini kami ingin menunjukkan potensi untuk melakukan pemblokiran yang terintegrasi dengan firewall. Pada PHP kita dapat mengatur HTTP Response Code yang nantinya akan tercatat pada /var/log/apache2/access.log (HTTP) atau /var/log/apache2/ssl_access.log (HTTPS), sebagai berikut:
 ```
